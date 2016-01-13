@@ -26,4 +26,8 @@ Documentation of files and modules should utilize (reStructuredText)[http://www.
 
 ### Unit Tests
 
+In order to maintain the integrity of the package, each new module or changes to existing modules should be tested extensively.  This is important as these modules may be used by a wide array of scientists and engineers and erroneous results may have significant impacts on the results of their work.
+
+Code used for testing should *not* reside in the module directory itself, but rather should be contained in a directory within the existing module called ``/tests``.
+
 ## Continuous Integration
