@@ -1,9 +1,11 @@
 # Contributing to AtmPy
 
+The ``atmpy`` package provides a set of tools for processing and analyzing data relevant to atmospheric science applications.  The package is written using Python 3. 
+
 
 ## Contributing New Code
 
-The ``atmpy`` package provides a set of tools for processing and analyzing data relevant to atmospheric science applications.  The field of atmospheric science is broad and developing and it is unlikely that this package will cover all use cases.  In that instance, a developer may reasonably desire to provide a tool that they use on a regular basis and think others may also find useful.  
+The field of atmospheric science is broad and developing and it is unlikely that this package will cover all use cases.  In that instance, a developer may reasonably desire to provide a tool that they use on a regular basis and think others may also find useful.  
 
 ### Structure
 
