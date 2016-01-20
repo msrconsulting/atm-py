@@ -26,7 +26,7 @@ Some effort has been placed in attempting to codify a standard directory structu
           |--__cpc
      |--__size_dstr
 |--__radiation
-|--__cloud_microphys
+|--__cloud_microphysics
 ```
 
 If a developer is interested in providing new code, they will likely begin with the question where exactly does that code belong?  This question is a difficult one and while some thought has been placed in the initial package structure, there are many instances where the new code may not fit neatly into an existing module.  In that case
