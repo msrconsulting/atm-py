@@ -24,7 +24,7 @@ If a developer is interested in providing new code, they will likely begin with 
 
 ### Commenting
 
-Documentation of files and modules should utilize (reStructuredText)[http://www.sphinx-doc.org/en/stable/rest.html].
+Documentation of files and modules should utilize [reStructuredText](http://www.sphinx-doc.org/en/stable/rest.html).
 
 ### Unit Tests
 
