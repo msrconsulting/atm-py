@@ -13,18 +13,27 @@ Some effort has been placed in attempting to codify a standard directory structu
 
 ```
 . atmpy
-|-- __aerosol
+|--__general
+|--__aerosol
      |--__physics
-         |--__mech
-         |--__opt
-         
+          |--__mech
+          |--__opt
+     |--__instr
+          |--__dma
+          |--__opc
+          |--__pas
+          |--__crd
+          |--__cpc
+     |--__size_dstr
+|--__radiation
+|--__cloud_microphysics
 ```
 
 If a developer is interested in providing new code, they will likely begin with the question where exactly does that code belong?  This question is a difficult one and while some thought has been placed in the initial package structure, there are many instances where the new code may not fit neatly into an existing module.  In that case
 
 ### Commenting
 
-Documentation of files and modules should utilize (reStructuredText)[http://www.sphinx-doc.org/en/stable/rest.html].
+Documentation of files and modules should utilize [reStructuredText](http://www.sphinx-doc.org/en/stable/rest.html).
 
 ### Unit Tests
 
