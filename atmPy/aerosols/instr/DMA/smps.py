@@ -11,8 +11,8 @@ import pandas as pd
 import statsmodels.api as sm
 from scipy.interpolate import interp1d
 
-from atmPy.aerosols import aerosol
-from atmPy.atmosphere import Air
+from atmPy.General.vapor_pressure import Air
+from atmPy.aerosols.phys import elec_props as elec
 
 
 class SMPS(object):
@@ -144,18 +144,18 @@ class SMPS(object):
         for i, d in enumerate(rdiam):
 
             # Get the fraction of particles that are singly charged
-            f1 = aerosol.ndistr(d, pos_neg, gas.t)
+            f1 = elec.ndistr(d, pos_neg, gas.t)
 
             for j in reversed(range(2, n+1)):  # Loop through charges 2 and higher backwards
 
                 ne = j*pos_neg
-                fi = aerosol.ndistr(d, ne, gas.t)
+                fi = elec.ndistr(d, ne, gas.t)
 
                 # Mobility of multiply charged particles
-                z_mult = abs(ne * aerosol.z(d, gas, pos_neg))
+                z_mult = abs(ne * elec.z(d, gas, pos_neg))
 
                 # Diameter bin which contains the multiply charged particles
-                d_mult = aerosol.z2d(z_mult, gas, 1)
+                d_mult = elec.z2d(z_mult, gas, 1)
 
                 # Continue while the diameter specified is larger than the minimum diameter
                 if d_mult >= diam[0]:
@@ -496,7 +496,7 @@ class SMPS(object):
             beta = float(qa)/float(qs)
 
             # Retrieve the center mobility
-            zc = aerosol.z(dp, self.air, 1)
+            zc = elec.z(dp, self.air, 1)
 
             # Upper bound of the mobility
             zm = (1-beta/2)*zc
@@ -504,7 +504,7 @@ class SMPS(object):
             # Lower bound of the mobility
             zp = (1+beta/2)*zc
 
-            return aerosol.z2d(zm, self.air, 1) - aerosol.z2d(zp, self.air, 1)
+            return elec.z2d(zm, self.air, 1) - elec.z2d(zp, self.air, 1)
 
         for e, i in enumerate(diam):
             try:

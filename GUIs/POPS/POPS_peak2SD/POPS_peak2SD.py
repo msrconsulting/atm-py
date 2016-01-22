@@ -13,9 +13,9 @@ import os
 import matplotlib
 import numpy as np
 import wx
-from atmPy.instruments.POPS import peaks
 
-from atmPy.aerosols.instr.POPS import calibration
+from cruft.POPS import calibration
+from cruft.instruments import peaks
 
 matplotlib.use('WXAgg')
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas

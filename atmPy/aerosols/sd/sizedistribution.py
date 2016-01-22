@@ -1,19 +1,21 @@
-import numpy as np
-from matplotlib.colors import LogNorm
-import pylab as plt
-from copy import deepcopy
-from atmPy.tools import plt_tools, math_functions, array_tools
-from atmPy import timeseries
-import pandas as pd
-import warnings
 import datetime
-from atmPy.mie import bhmie
+import warnings
+from copy import deepcopy
+
+import numpy as np
+import pandas as pd
+import pylab as plt
 import scipy.optimize as optimization
+from matplotlib.colors import LogNorm
 from scipy import integrate
 from scipy import stats
+
+from atmPy import timeseries
 from atmPy import vertical_profile
-from atmPy.aerosols import hygroscopic_growth as hg
+from atmPy.aerosols.phys import hygroscopic_growth as hg
+from atmPy.mie import bhmie
 from atmPy.tools import pandas_tools
+from atmPy.tools import plt_tools, math_functions, array_tools
 
 # Todo: rotate the plots of the layerseries (e.g. plot_particle_concentration) to have the altitude as the y-axes
 

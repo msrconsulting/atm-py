@@ -220,7 +220,7 @@ class TimeSeries(object):
 
         Example
         -------
-        >>> from atmPy.instruments.piccolo import piccolo
+        >>> from cruft.piccolo import piccolo
         >>> launch = '2015-04-19 08:20:22'
         >>> landing = '2015-04-19 10:29:22'
         >>> hk = piccolo.read_file(filename) # create housekeeping instance

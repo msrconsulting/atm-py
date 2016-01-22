@@ -9,7 +9,7 @@ from math import pi
 
 from scipy.optimize import newton
 
-from atmPy.aerosols.aerosol import z
+from atmPy.aerosols.phys.elec_props import z
 
 
 class DMA(object):

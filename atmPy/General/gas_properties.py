@@ -15,7 +15,7 @@ class Gas(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, t=20, p=1013.25):
-        self.t = t
+        self.t = t + 273.15
         self.p = p
 
     def __str__(self):
@@ -23,49 +23,36 @@ class Gas(object):
 
     @abc.abstractmethod
     def mu(self):
+        """
+        Dynamic viscocity
+
+        Returns
+        --------
+        float
+            Viscocity of the specific gas at the current conditions in Pa*s
+        """
         return 0
 
     @abc.abstractmethod
     def l(self):
+        """
+        Mean free path.
+
+        Returns
+        --------
+        float
+            Mean free path of gas in m.
+        """
         return 0
 
-
-class Air(Gas):
-    def __init__(self, t=20.0, p=1013.25):
-        super(Air, self).__init__(t, p)
-
-    def mu(self):
+    @abc.abstractmethod
+    def rho(self):
         """
-        The following function defines viscosity as a function of T in P-s.
-
-        Parameters
-        ---------
-        T:temperature in degrees Celsius
+        Density of gas
 
         Returns
         -------
-        Viscosity in P-s
+        float
+            Density of gas in kg/m-3.
         """
-
-        # Make sure that the temperature is a float
-        t = self.t + 273.15
-        c = 120.0       # Sutherland's constant
-        mu0 = 18.27e-6  # Reference viscocity
-        t0 = 291.15     # Reference temperature
-
-        return (c+t0)/(c+t)*(t/t0)**1.5*mu0
-
-    def l(self):
-        """
-        Determine the mean free path of air.
-
-        Returns
-        -------
-        Mean free path of air in microns.
-        """
-
-        # Convert pressure to atmospheres
-        patm = float(self.p)/1013.25
-        l0 = 0.066  # Reference mean free path at 1 atm
-
-        return l0/patm
+        return 0
