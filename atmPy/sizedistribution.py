@@ -421,9 +421,13 @@ class SizeDist(object):
             gap_start = self.data.index[where]
             gap_end = self.data.index[where + 1]
             for gap_s in gap_start:
-                self.data.loc[gap_s + threshold] = _np.zeros(self.bincenters.shape)
+                fill = _np.zeros(self.bincenters.shape)
+                fill[:] = _np.nan
+                self.data.loc[gap_s + threshold] = fill
             for gap_e in gap_end:
-                self.data.loc[gap_e - threshold] = _np.zeros(self.bincenters.shape)
+                fill = _np.zeros(self.bincenters.shape)
+                fill[:] = _np.nan
+                self.data.loc[gap_e - threshold] = fill
             self.data = self.data.sort_index()
         return
 
