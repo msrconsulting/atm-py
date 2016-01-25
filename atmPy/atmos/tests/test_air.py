@@ -54,7 +54,7 @@ class TestAir(object):
         for e, i in enumerate(self.rho_vals['rho']):
             yield self.check_rho, {'T': self.rho_vals['T'][e],
                                    'P': self.rho_vals['P'][e],
-                                   'RH': self.rho_vals['RH'][e]}, i, 0.1
+                                   'RH': self.rho_vals['RH'][e]}, i, 0.2
 
     def check_mu(self, t, val, tol):
         self.a.t = t
