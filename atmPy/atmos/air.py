@@ -1,5 +1,5 @@
-import atmPy.general.gas_props as gp
-import atmPy.general.water as water
+import atmPy.atmos.gas_props as gp
+import atmPy.atmos.water as water
 
 
 class Air(gp.Gas):

@@ -1,4 +1,4 @@
-import atmPy.general.air as air
+import atmPy.atmos.air as air
 
 from numpy import abs
 

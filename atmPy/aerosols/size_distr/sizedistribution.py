@@ -10,7 +10,7 @@ from matplotlib.colors import LogNorm
 from scipy import integrate
 from scipy import stats
 
-from atmPy.general import vertical_profile, timeseries
+from atmPy.atmos import vertical_profile, timeseries
 from atmPy.aerosols import hygroscopic_growth as hg
 from atmPy.for_removal.mie import bhmie
 from atmPy.tools import pandas_tools

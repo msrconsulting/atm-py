@@ -11,7 +11,7 @@ import pandas as pd
 import statsmodels.api as sm
 from scipy.interpolate import interp1d
 
-from atmPy.general import air
+from atmPy.atmos import air
 from atmPy.aerosols.physics import aerosol
 
 
