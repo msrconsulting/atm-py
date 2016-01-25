@@ -11,7 +11,7 @@ import pandas as pd
 import statsmodels.api as sm
 from scipy.interpolate import interp1d
 
-from atmPy.general.atmosphere import Air
+from atmPy.general import air
 from atmPy.aerosols.physics import aerosol
 
 
@@ -31,7 +31,7 @@ class SMPS(object):
     cn_raw:
     cn_smoothed:
     diam:
-    air:            Air object
+    air:            air object
                     Use this object to set the temperature and pressure and do calculations related to the gas
     files:          list of file objects
                     These are the files that will be processed
@@ -40,9 +40,10 @@ class SMPS(object):
 
 
     """
+
     def __init__(self, dma):
 
-        self.air = Air()
+        self.air = air()
         self.dma = dma
         self.files = []
 
@@ -78,7 +79,7 @@ class SMPS(object):
         s = len(self.files)
         i = 0
         while True:
-            print('\r[{0}] {1}%'.format('#'*i, i/s*100))
+            print('\r[{0}] {1}%'.format('#' * i, i / s * 100))
             yield None
             i += 1
 
@@ -136,7 +137,7 @@ class SMPS(object):
         rdiam = np.copy(diam[::-1])
 
         # We are working backwards, so we need to have the length to get this all right...
-        l = len(dn)-1
+        l = len(dn) - 1
 
         # Inline function for finding the value closest to diameter d in the array diam
         fmin = lambda nd: (np.abs(np.asarray(diam) - nd)).argmin()
@@ -146,9 +147,9 @@ class SMPS(object):
             # Get the fraction of particles that are singly charged
             f1 = aerosol.ndistr(d, pos_neg, gas.t)
 
-            for j in reversed(range(2, n+1)):  # Loop through charges 2 and higher backwards
+            for j in reversed(range(2, n + 1)):  # Loop through charges 2 and higher backwards
 
-                ne = j*pos_neg
+                ne = j * pos_neg
                 fi = aerosol.ndistr(d, ne, gas.t)
 
                 # Mobility of multiply charged particles
@@ -159,17 +160,16 @@ class SMPS(object):
 
                 # Continue while the diameter specified is larger than the minimum diameter
                 if d_mult >= diam[0]:
-
                     # Find the index of the multiple charges
                     k = fmin(d_mult)
 
                     # Remove the particles in bin k that belong in the current bin, but don't remove more
                     # particles than there are in the bin
-                    dn[k] -= min(dn[l-i]*fi/f1, dn[k])
+                    dn[k] -= min(dn[l - i] * fi / f1, dn[k])
 
-                # The total number of particlesi n the current bin is simply the number of singly charged
-                # particles divided by the singly charged charging efficiency.
-            dn[l-i] /= f1
+                    # The total number of particlesi n the current bin is simply the number of singly charged
+                    # particles divided by the singly charged charging efficiency.
+            dn[l - i] /= f1
 
         return None
 
@@ -188,12 +188,12 @@ class SMPS(object):
         #                   Likely we would need to make some of the instance variables local (air.t and air.p
         #                   come to mind).
 
-        self.dn_interp = np.zeros((2*len(self.files), len(self.diam_interp)))
-        self.date = [None]*2*len(self.files)
+        self.dn_interp = np.zeros((2 * len(self.files), len(self.diam_interp)))
+        self.date = [None] * 2 * len(self.files)
 
-        self.cn_raw = np.zeros((2*len(self.files), len(self.diam_interp)))
-        self.cn_smoothed = np.zeros((2*len(self.files), len(self.diam_interp)))
-        self.diam = np.zeros((2*len(self.files), len(self.diam_interp)))
+        self.cn_raw = np.zeros((2 * len(self.files), len(self.diam_interp)))
+        self.cn_smoothed = np.zeros((2 * len(self.files), len(self.diam_interp)))
+        self.diam = np.zeros((2 * len(self.files), len(self.diam_interp)))
 
         for e, i in enumerate(self.files):
 
@@ -262,11 +262,11 @@ class SMPS(object):
                 # BEGIN DOWN DATA PRODUCTION #
                 # Flip the cpc data and extricate the portion of interest
                 cpc_down = cpc_data[::-1]
-                cpc_down = cpc_down[tdwell:tscan+tdwell]
+                cpc_down = cpc_down[tdwell:tscan + tdwell]
 
                 # Flip the down data and slice it
                 down_data = data.iloc[::-1]
-                down_data = down_data.iloc[int(tdwell):int(tscan+tdwell)]
+                down_data = down_data.iloc[int(tdwell):int(tscan + tdwell)]
 
                 smooth_down = sm.nonparametric.lowess(cpc_down, down_data.DMA_Diam.values,
                                                       frac=self.alpha, it=1, missing='none',
@@ -302,25 +302,25 @@ class SMPS(object):
                 continue
 
             else:
-                n_e = e-e_count
+                n_e = e - e_count
                 # Stuff the data for the attributes down here.  If an error is thrown, we will not contaminate
                 # member data.
 
-                self.date[2*n_e] = dt.strptime(str(meta_data.Date[0]) + ',' + str(meta_data.Time[0]),
-                                               '%m/%d/%y,%H:%M:%S')
-                self.date[2*n_e + 1] = self.date[2*n_e] + timedelta(0, tscan + tdwell)
+                self.date[2 * n_e] = dt.strptime(str(meta_data.Date[0]) + ',' + str(meta_data.Time[0]),
+                                                 '%m/%d/%y,%H:%M:%S')
+                self.date[2 * n_e + 1] = self.date[2 * n_e] + timedelta(0, tscan + tdwell)
 
-                self.diam[2*n_e, 0:np.asarray(dup).size] = np.asarray(dup)
-                self.cn_raw[2*n_e, 0:cpc_up.size] = cpc_up
+                self.diam[2 * n_e, 0:np.asarray(dup).size] = np.asarray(dup)
+                self.cn_raw[2 * n_e, 0:cpc_up.size] = cpc_up
 
                 # Store raw data for the down scan
-                self.cn_raw[2*n_e+1, 0:cpc_down.size] = cpc_down
-                self.diam[2*n_e+1, 0:np.asarray(ddown).size] = np.asarray(ddown)
+                self.cn_raw[2 * n_e + 1, 0:cpc_down.size] = cpc_down
+                self.diam[2 * n_e + 1, 0:np.asarray(ddown).size] = np.asarray(ddown)
 
-                self.cn_smoothed[2*n_e, 0:smooth_up.size] = smooth_up
-                self.cn_smoothed[2*n_e+1, 0:smooth_down.size] = smooth_down
-                self.dn_interp[2*n_e, :] = up_interp_dn
-                self.dn_interp[2*n_e+1, :] = down_interp_dn
+                self.cn_smoothed[2 * n_e, 0:smooth_up.size] = smooth_up
+                self.cn_smoothed[2 * n_e + 1, 0:smooth_down.size] = smooth_down
+                self.dn_interp[2 * n_e, :] = up_interp_dn
+                self.dn_interp[2 * n_e + 1, :] = down_interp_dn
 
     @staticmethod
     def __readmeta__(file):
@@ -376,27 +376,27 @@ class SMPS(object):
 
         # CPC concentrations will be simply the 1 s buffer divided by the
         # CPC flow
-        cpc_cnt = up_data.CPC_1_Cnt.values/up_data.CPC_Flw.values
+        cpc_cnt = up_data.CPC_1_Cnt.values / up_data.CPC_Flw.values
 
         # Truncate the upward trajectory
         up = cpc_cnt[0:tscan]
 
         # Get the counts for the decreasing voltage and truncate them
-        down = cpc_cnt[::-1]                    # Flip the variable cpc_cnt
-        down = cpc_cnt[tdwell:(tscan+tdwell)]     # Truncate the data
+        down = cpc_cnt[::-1]  # Flip the variable cpc_cnt
+        down = cpc_cnt[tdwell:(tscan + tdwell)]  # Truncate the data
         down_data = up_data[::-1]
 
         # LAG CORRELATION #
         corr = np.correlate(up, down, mode="full")
         plt.plot(corr)
-        corr = corr[corr.size/2:]
-        self.lag = floor(corr.argmax(axis=0)/2+delta)
+        corr = corr[corr.size / 2:]
+        self.lag = floor(corr.argmax(axis=0) / 2 + delta)
 
         f = self.lag
 
         # GET CPC DATA FOR PLOTTING #
         # Shift the up data with the number of zeros padding on the end equal to the lag
-        up = up_data['CPC_1_Cnt'].values[f:tscan+f]/up_data['CPC_Flw'].values[f:tscan+f]
+        up = up_data['CPC_1_Cnt'].values[f:tscan + f] / up_data['CPC_Flw'].values[f:tscan + f]
 
         # Remove NaNs and infs
         up[np.where(np.isinf(up))] = 0.0
@@ -415,10 +415,10 @@ class SMPS(object):
             f = tdwell
             down = np.pad(down_data['CPC_1_Cnt'].values[0:tscan] /
                           down_data['CPC_Flw'].values[0:tscan],
-                          pad_width={tdwell-f, 0}, constant_values={0, 0})
+                          pad_width={tdwell - f, 0}, constant_values={0, 0})
         else:
-            down = (down_data['CPC_1_Cnt'].values[(tdwell-f):(tscan+tdwell-f)] /
-                    down_data['CPC_Flw'].values[(tdwell-f):(tscan+tdwell-f)])
+            down = (down_data['CPC_1_Cnt'].values[(tdwell - f):(tscan + tdwell - f)] /
+                    down_data['CPC_Flw'].values[(tdwell - f):(tscan + tdwell - f)])
 
         down[np.where(np.isinf(down))] = 0.0
         down[np.where(np.isnan(down))] = 0.0
@@ -470,8 +470,8 @@ class SMPS(object):
         :return:
         """
         ls = len(dn)
-        dlogd = np.zeros(ls)    # calculate dlogd
-        fwhm = np.zeros(ls)     # hold width
+        dlogd = np.zeros(ls)  # calculate dlogd
+        fwhm = np.zeros(ls)  # hold width
         self.air.t = mean_data.Aer_Temp_C
         self.air.p = mean_data.Aer_Pres_PSI
 
@@ -493,23 +493,23 @@ class SMPS(object):
             -------
             Width of transfer function in nm.
             """
-            beta = float(qa)/float(qs)
+            beta = float(qa) / float(qs)
 
             # Retrieve the center mobility
             zc = aerosol.z(dp, self.air, 1)
 
             # Upper bound of the mobility
-            zm = (1-beta/2)*zc
+            zm = (1 - beta / 2) * zc
 
             # Lower bound of the mobility
-            zp = (1+beta/2)*zc
+            zp = (1 + beta / 2) * zc
 
             return aerosol.z2d(zm, self.air, 1) - aerosol.z2d(zp, self.air, 1)
 
         for e, i in enumerate(diam):
             try:
                 fwhm[e] = xfer(i, mean_data.Aer_Q_VLPM, mean_data.Sh_Q_VLPM)
-                dlogd[e] = np.log10(i+fwhm[e]/2)-np.log10(i-fwhm[e]/2)
+                dlogd[e] = np.log10(i + fwhm[e] / 2) - np.log10(i - fwhm[e] / 2)
 
             except (ValueError, ZeroDivisionError):
                 fwhm[e] = np.nan
@@ -533,7 +533,3 @@ class SMPS(object):
 
         # Return the interpolated dNdlogDp distribution
         return f(self.diam_interp)
-
-
-
-
