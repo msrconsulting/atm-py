@@ -1,8 +1,5 @@
 import atmPy.atmos.gas_props as gp
 import atmPy.atmos.water as water
-from atmPy.atmos.constants import R, Na
-
-from numpy import sqrt, pi
 
 
 class Air(gp.Gas):
@@ -11,7 +8,6 @@ class Air(gp.Gas):
 
         self._Rd = 287.05
         self._Rv = 461.495
-        self._dc = 3.7e-10
         self.e = 0
 
         if "ecal_meth" in kwargs:
@@ -62,15 +58,12 @@ class Air(gp.Gas):
         """
 
         # Convert pressure to atmospheres
-        # patm = float(self.p) / 1013.25
-        # l0 = 0.066  # Reference mean free path at 1 atm
+        patm = float(self.p) / 1013.25
+        l0 = 0.066  # Reference mean free path at 1 atm
 
-        tk = self.t + 273.15
-        return (R * tk) / (sqrt(2) * pi * self._dc ** 2 * Na * self.p * 100)
-
-        # return l0 / patm
+        return l0 / patm
 
     def rho(self):
 
         tk = self.t + 273.15
-        return self.p * 100 / (self._Rd * tk) + self.e * 100 / (self._Rv * tk)
+        return self.p * 100 / (self._Rd* tk) + self.e * 100 / (self._Rv * tk)

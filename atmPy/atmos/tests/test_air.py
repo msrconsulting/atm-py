@@ -64,5 +64,29 @@ class TestAir(object):
     def check_rho(self, atm, val, tol):
         kwargs = {"rh": atm['RH']}
         self.a = air.Air(atm['T'], atm['P'], **kwargs)
-        print(self.a.t, self.a.p, atm['RH'], val,  self.a.rho(), abs((val - self.a.rho()) / val))
+        print(self.a.t, self.a.p, atm['RH'], val, self.a.rho(), abs((val - self.a.rho()) / val))
         assert abs((val - self.a.rho()) / val) < tol
+
+
+    def test_mfp(self):
+        """
+        Test the calculation of the mean free path against the standard using the
+        mean free path at standard conditions (0.066 um; from Hand 1999, p 21)
+
+        """
+
+        p = [100, 500, 800, 1000]
+
+        print('')
+        print('========= Testing MEAN FREE PATH Calculations =========')
+        print('   P       mfp       mfp       r   ')
+        print('======= ========= ========= =======')
+
+        for i in p:
+            ltest = 0.066 / i * 1013.25 / 1e6
+            a = air.Air(20, i)
+
+            print(i, a.l(), ltest, abs(ltest - a.l()) / ltest)
+            assert abs(ltest - a.l()) / ltest < 0.01
+
+        print(' ')
