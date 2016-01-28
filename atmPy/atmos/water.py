@@ -11,6 +11,7 @@ from math import log10
 from math import tanh
 from math import log
 from math import exp
+from scipy.optimize import newton
 import abc
 
 # Molecular weight of water in g/mol
@@ -20,7 +21,7 @@ Mw = 18.01528
 Ma = 28.97
 
 # Ratio of molecular weight of water to air (~0.622)
-eps = Mw/Ma
+eps = Mw / Ma
 
 
 class Water:
@@ -47,10 +48,10 @@ class Water:
     >>>print eg.ew(t)
 
     """
-    
+
     __metaclass__ = abc.ABCMeta
-    
-    @abc.abstractmethod   
+
+    @abc.abstractmethod
     def ew(self, t):
         """
         Calculate saturation vapor pressure as a function of temperature.
@@ -64,7 +65,7 @@ class Water:
         Saturation vapor pressure with respect to water in millibars.
         """
         return 0
-        
+
     @abc.abstractmethod
     def ei(self, t):
         """
@@ -82,6 +83,15 @@ class Water:
 
     def dew_point(self, t, rh):
         """
+        Function for determining the dewpoint at the current conditions.  This function
+        uses a Newton-Raphson root finder and is dependent on the impmentation of the
+        water class.
+
+        The dewpoint is simply the temperature at saturation, therefore this function
+        determines the current saturation vapor pressure based on temperature and relative
+        humidity, and then uses the zero finding routine to determine the temperature
+        at which saturation occurs.
+
         Parameters
         ----------
         t:  float
@@ -95,66 +105,73 @@ class Water:
         Dewpoint temperature in degrees Celsius
         """
 
-        return 0
+        # Retrieve the saturation vapor pressure
+        es = rh / 100 * self.ew(t)
+
+        # Function for root finding
+        # tn is the temperature to be returned
+        def f(tn):
+            return self.ew(tn) - es
+
+        return newton(f, 0)
 
 
 class GoffGratch(Water):
     """
     Use Goff-Gratch equations to calculate vapor pressure over water or ice.
     """
-    
+
     def ew(self, t):
         c = [-7.90298, 5.02808, -1.3816E-07, 11.344, 8.1328E-03, -3.19149]
         ts = 373.16
         t += 273.15
-        b = c[3]*(1.0 - t/ts)
-        d = c[5]*(ts/t - 1.0)
-        a = c[0]*(ts/t - 1.0) + c[1]*log10(ts/t) + \
-            c[2]*(10.0**b-1) + c[4]*(10.0**d-1) + log10(1013.246)
-        return 10.0**a
-         
+        b = c[3] * (1.0 - t / ts)
+        d = c[5] * (ts / t - 1.0)
+        a = c[0] * (ts / t - 1.0) + c[1] * log10(ts / t) + \
+            c[2] * (10.0 ** b - 1) + c[4] * (10.0 ** d - 1) + log10(1013.246)
+        return 10.0 ** a
+
     def ei(self, t):
         c = [log10(6.1071), -9.09718, -3.56654, 0.876793]
         t += 273.15
-        a = c[0] + c[1]*(273.15/t - 1) + c[2]*log10(273.15/t) + c[3]*(1 - t/273.15)
-        return 10.0**a
+        a = c[0] + c[1] * (273.15 / t - 1) + c[2] * log10(273.15 / t) + c[3] * (1 - t / 273.15)
+        return 10.0 ** a
 
 
 class Buck81(Water):
     """
     Calculate water vapor pressure as function of temperature according to Buck (1981).
     """
-    
+
     def ew(self, t):
         a = 6.1121
         b = 18.729
         c = 257.87
         d = 227.3
         # This is equation 4a in Buck (1981)
-        return a*exp((b-t/d)*t/(t+c))
-        
+        return a * exp((b - t / d) * t / (t + c))
+
     def ei(self, t):
         # These coefficients are from Table 2
         a = 6.1115
         b = 23.036
         c = 279.82
         d = 333.7
-        return a*exp((b - t/d)*t/(t + c))   # This is equation 4a
-        
-        
+        return a * exp((b - t / d) * t / (t + c))  # This is equation 4a
+
+
 class MurphyKoop(Water):
-    
     def ew(self, t):
         t += 273.15
-        es = 54.842763 - 6763.22/t - 4.210*log(t) + 0.000367*t +\
-            tanh(0.0415*(t - 218.8))*(53.878 - 1331.22/t - 9.44523*log(t) + 0.014025*t)
-         
+        es = 54.842763 - 6763.22 / t - 4.210 * log(t) + 0.000367 * t + \
+             tanh(0.0415 * (t - 218.8)) * (53.878 - 1331.22 / t - 9.44523 * log(t) + 0.014025 * t)
+
         # Convert from Pa -> hPa (mb)
-        return exp(es)/100
+        return exp(es) / 100
 
     def ei(self, t):
         t += 273.15
-        return exp(9.550426 - 5723.265/t + 3.53068*log(t) - 0.00728332*t)/100
+        return exp(9.550426 - 5723.265 / t + 3.53068 * log(t) - 0.00728332 * t) / 100
 
 
 def wv_mixing_ratio(e, p):
@@ -173,4 +190,4 @@ def wv_mixing_ratio(e, p):
     float
     Water vapor mixing ratio
     """
-    return e*eps/(p-e)
+    return e * eps / (p - e)

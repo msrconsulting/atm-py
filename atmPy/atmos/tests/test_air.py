@@ -56,19 +56,21 @@ class TestAir(object):
                                    'P': self.rho_vals['P'][e],
                                    'RH': self.rho_vals['RH'][e]}, i, 0.2
 
-    def check_mu(self, t, val, tol):
-        self.a.t = t
-        print(self.a.t, self.a.mu(), abs((val - self.a.mu()) / val))
-        assert abs((val - self.a.mu()) / val) < tol
+    @staticmethod
+    def check_mu(t, val, tol):
+        a = air.Air(t, 850)
+        print(a.t, a.mu(), abs((val - a.mu()) / val))
+        assert abs((val - a.mu()) / val) < tol
 
-    def check_rho(self, atm, val, tol):
+    @staticmethod
+    def check_rho(atm, val, tol):
         kwargs = {"rh": atm['RH']}
-        self.a = air.Air(atm['T'], atm['P'], **kwargs)
-        print(self.a.t, self.a.p, atm['RH'], val, self.a.rho(), abs((val - self.a.rho()) / val))
-        assert abs((val - self.a.rho()) / val) < tol
+        a = air.Air(atm['T'], atm['P'], **kwargs)
+        print(a.t, a.p, atm['RH'], val, a.rho(), abs((val - a.rho()) / val))
+        assert abs((val - a.rho()) / val) < tol
 
-
-    def test_mfp(self):
+    @staticmethod
+    def test_mfp():
         """
         Test the calculation of the mean free path against the standard using the
         mean free path at standard conditions (0.066 um; from Hand 1999, p 21)
