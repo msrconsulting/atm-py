@@ -2,6 +2,8 @@
 
 ## A few words about this repository...
 
+[![Join the chat at https://gitter.im/lo-co/atm-py](https://badges.gitter.im/lo-co/atm-py.svg)](https://gitter.im/lo-co/atm-py?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This repo is currently under heavy revision in preparation for actual publication.  Issues that we will be investigating are:
 
 * Package and repository structure
