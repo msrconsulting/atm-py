@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.org/lo-co/atm-py.svg?branch=master)](https://travis-ci.org/lo-co/atm-py)
-
-
-[![Join the chat at https://gitter.im/lo-co/atm-py](https://badges.gitter.im/lo-co/atm-py.svg)](https://gitter.im/lo-co/atm-py?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://badges.gitter.im/lo-co/atm-py.svg)](https://gitter.im/lo-co/atm-py?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## A few words about this repository...
 
