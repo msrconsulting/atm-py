@@ -1,8 +1,10 @@
-# all functions are based on http://aerosols.wustl.edu/AAARworkshop08/software/AEROCALC-11-3-03.xls
-
 import numpy as np
 import warnings
 from atmPy.aerosols import tools
+
+# all functions are based on http://aerosols.wustl.edu/AAARworkshop08/software/AEROCALC-11-3-03.xls
+
+
 
 def loss_in_a_T_junction(temperature=293.15,
                          pressure=65.3,
@@ -11,7 +13,8 @@ def loss_in_a_T_junction(temperature=293.15,
                          particle_density=1000,
                          pick_of_tube_diameter=2.15 * 1e-3,
                          verbose=False):
-    """Returns the fraction of particles which make from a main tubing into a T-like pick-of based on the stopping distancde
+    """
+    Returns the fraction of particles which make from a main tubing into a T-like pick-of based on the stopping distancde
 
     Arguments
     ---------
@@ -29,11 +32,11 @@ def loss_in_a_T_junction(temperature=293.15,
         """
 
     pl = tools.stopping_distance(temperature=temperature,
-                           pressure=pressure,
-                           particle_diameter=particle_diameter,
-                           particle_velocity=particle_velocity,
-                           particle_density=particle_density,
-                           verbose=verbose)
+                                 pressure=pressure,
+                                 particle_diameter=particle_diameter,
+                                 particle_velocity=particle_velocity,
+                                 particle_density=particle_density,
+                                 verbose=verbose)
     out = 1. - pl / pick_of_tube_diameter
     if verbose:
         print('loss_in_a_T_junction: %s' % out)
@@ -67,14 +70,13 @@ def loss_at_an_abrupt_contraction_in_circular_tubing(temperature=293.15,  # Kelv
         tube_air_velocity = tools.flow_rate2flow_velocity(flow_rate_in_inlet, tube_diameter, verbose=verbose)
 
     st_num = tools.stokes_number(particle_density, particle_diameter, pressure, temperature, tube_air_velocity, 1,
-                           contraction_diameter, verbose=verbose)
-
+                                 contraction_diameter, verbose=verbose)
 
     # st_num = (particle_density * particle_diameter * particle_diameter * 0.000000000001 * slip_correction_factor * B906 / (18*B912*B908))
 
 
     frac = 1 - (1 / (1 + ((2 * st_num * (1 - (contraction_diameter / tube_diameter) ** 2)) / (
-    3.14 * np.exp(-0.0185 * contraction_angle))) ** -1.24))
+        3.14 * np.exp(-0.0185 * contraction_angle))) ** -1.24))
     return frac
 
 
@@ -105,7 +107,7 @@ def aspiration_efficiency_all_forward_angles(temperature=293.15,  # Kelvin
         air_velocity_in_inlet = tools.flow_rate2flow_velocity(flow_rate_in_inlet, inlet_diameter, verbose=verbose)
 
     st_num = tools.stokes_number(particle_density, particle_diameter, pressure, temperature, air_velocity_in_inlet,
-                           velocity_ratio, inlet_diameter, verbose=verbose)
+                                 velocity_ratio, inlet_diameter, verbose=verbose)
     # rey_num = tools.flow_reynolds_number(inlet_diameter, air_velocity_in_inlet, temperature, pressure, verbose=verbose)
     if (45 < sampling_angle <= 90) and (1.25 < velocity_ratio < 6.25) and (0.003 < st_num < 0.2):
         pass
@@ -126,14 +128,12 @@ Stokes number: %s (0.003 < st_num  < 0.2)""" % (sampling_angle, velocity_ratio, 
     else:
         f619 = st_num * np.exp(0.022 * sampling_angle)
         inert_param = (1 - 1 / (1 + (2 + 0.617 / velocity_ratio) * f619)) * (
-        1 - 1 / (1 + 0.55 * f619 * np.exp(0.25 * f619))) / (1 - 1 / (1 + 2.617 * f619))
+            1 - 1 / (1 + 0.55 * f619 * np.exp(0.25 * f619))) / (1 - 1 / (1 + 2.617 * f619))
     # =IF(B609=0,1-1/(1+(2+0.617/B611)*B618),IF(B609>45,3*B618^(B611^-0.5),(1-1/(1+(2+0.617/B611)*B619))*(1-1/(1+0.55*B619*EXP(0.25*B619)))/(1-1/(1+2.617*B619))))
 
 
     asp_eff = 1 + (velocity_ratio * np.cos(sampling_angle * np.pi / 180) - 1) * inert_param
     return asp_eff
-
-
 
 
 def loss_in_a_bent_section_of_circular_tubing(temperature=293.15,  # Kelvin
@@ -160,11 +160,12 @@ def loss_in_a_bent_section_of_circular_tubing(temperature=293.15,  # Kelvin
         tube_air_velocity = tools.flow_rate2flow_velocity(tube_air_flow_rate, tube_diameter, verbose=verbose)
 
     if flow_type == 'auto':
-        flow_type = tools.test_flow_type_in_tube(tube_diameter, tube_air_velocity, temperature, pressure, verbose=verbose)
+        flow_type = tools.test_flow_type_in_tube(tube_diameter, tube_air_velocity, temperature, pressure,
+                                                 verbose=verbose)
 
     velocity_ratio = 1
     stnum = tools.stokes_number(particle_density, particle_diameter, pressure, temperature, tube_air_velocity,
-                              velocity_ratio, tube_diameter, verbose=verbose)
+                                velocity_ratio, tube_diameter, verbose=verbose)
 
     if flow_type == 'laminar':
 
@@ -207,7 +208,8 @@ def gravitational_loss_in_circular_tube(temperature=293.15,  # Kelvin
         mean_flow_velocity = tools.flow_rate2flow_velocity(flow_rate, tube_diameter, verbose=verbose)
 
     if flow_type == 'auto':
-        flow_type = tools.test_flow_type_in_tube(tube_diameter, mean_flow_velocity, temperature, pressure, verbose=verbose)
+        flow_type = tools.test_flow_type_in_tube(tube_diameter, mean_flow_velocity, temperature, pressure,
+                                                 verbose=verbose)
 
     if flow_type == 'laminar':
         sv = tools.settling_velocity(temperature, particle_density, particle_diameter, pressure, verbose=verbose)
@@ -222,7 +224,8 @@ def gravitational_loss_in_circular_tube(temperature=293.15,  # Kelvin
                 k771 = np.arcsin(k770 ** (1 / 3.))  # done
 
             fract = (1 - (2 / np.pi) * (
-            2 * k770 * np.sqrt(1 - k770 ** (2 / 3)) + k771 - (k770 ** (1 / 3) * np.sqrt(1 - k770 ** (2 / 3)))))  # done
+                2 * k770 * np.sqrt(1 - k770 ** (2 / 3)) + k771 - (
+                k770 ** (1 / 3) * np.sqrt(1 - k770 ** (2 / 3)))))  # done
             if np.any(fract < 0):
                 fract = 0
     elif flow_type == 'turbulent':
@@ -275,7 +278,7 @@ def gravitational_loss_in_an_inlet(temperature=293.15,  # K
     """
 
     out = np.exp(-4.7 * tools.K(sampling_angle, inlet_length, air_velocity_in_inlet, inlet_diameter, particle_density,
-                          particle_diameter, pressure, temperature, velocity_ratio, verbose=verbose) ** 0.75)
+                                particle_diameter, pressure, temperature, velocity_ratio, verbose=verbose) ** 0.75)
     if verbose:
         print('Fraction lost due to gravitation: %s' % out)
     return out

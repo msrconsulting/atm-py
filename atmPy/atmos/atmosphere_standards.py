@@ -11,7 +11,8 @@ from scipy.interpolate import interp1d
 
 
 def standard_atmosphere(value, quantity='altitude', standard='international', return_standard=False):
-    """Returns pressure, temperature, and/or altitude as a function of pressure, or altitude for the standard international atmosphere
+    """
+    Returns pressure, temperature, and/or altitude as a function of pressure, or altitude for the standard international atmosphere
 
     Arguments
     ---------
@@ -33,9 +34,6 @@ def standard_atmosphere(value, quantity='altitude', standard='international', re
     -------
     tuple of two floats or two ndarrays depending on type of h:
         First quantaty the tuple is pressure in mbar or altitude in meter, second is temperatur in Kelvin.
-
-
-
     """
     if standard == 'international':
         alt = np.array([-610, 11000, 20000, 32000, 47000, 51000, 71000, 84852]).astype(float)

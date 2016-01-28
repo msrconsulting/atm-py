@@ -14,6 +14,8 @@ from scipy.interpolate import interp1d
 from atmPy.atmos import air
 from atmPy.aerosols.physics import aerosol
 
+# TODO: Figure out whether matplotlib, pandas, tkinter
+
 
 class SMPS(object):
     """
@@ -43,7 +45,7 @@ class SMPS(object):
 
     def __init__(self, dma):
 
-        self.air = air()
+        self.air = air.Air()
         self.dma = dma
         self.files = []
 
@@ -355,7 +357,7 @@ class SMPS(object):
         """
         return pd.read_csv(file, parse_dates='Date_Time', index_col=0, header=2, lineterminator='\n')
 
-    def getLag(self, index, delta=0, p=True):
+    def get_lag(self, index, delta=0, p=True):
         """
         This function can be called to guide the user in how to set the lag attribute.
 

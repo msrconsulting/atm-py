@@ -1,5 +1,3 @@
-__author__ = 'htelg'
-
 from copy import deepcopy
 
 import numpy as np
@@ -50,6 +48,7 @@ def load_csv(fname):
     data.index = pd.to_datetime(data.index)
     return TimeSeries(data)
 
+
 class TimeSeries(object):
     """
     This class simplifies the handling of housekeeping information from measurements.
@@ -80,7 +79,9 @@ class TimeSeries(object):
 
     # Todo: inherit docstring
     def get_sun_position(self):
-        """read docstring of solar.get_sun_position_TS"""
+        """
+        Read docstring of solar.get_sun_position_TS
+        """
         out = solar.get_sun_position_TS(self)
         return out
 
@@ -90,10 +91,9 @@ class TimeSeries(object):
         hk_tmp.data.index = hk_tmp.data.Altitude
         return hk_tmp
 
-
-
     def merge(self, ts):
-        """ Merges current with other timeseries. The returned timeseries has the same time-axes as the current
+        """
+        Merges current with other timeseries. The returned timeseries has the same time-axes as the current
         one (as opposed to the one merged into it). Missing or offset data points are linearly interpolated.
 
         Argument
@@ -117,17 +117,20 @@ class TimeSeries(object):
         return deepcopy(self)
 
     def plot_all(self):
-        """Plot each parameter separately versus time
+        """
+        Plot each parameter separately versus time
 
         Returns
         -------
-        list of matplotlib axes object """
+        list of matplotlib axes object
+        """
 
         axes = self.data.plot(subplots=True, figsize=(plt.rcParams['figure.figsize'][0], self.data.shape[1] * 4))
         return axes
 
-    def plot_map(self, resolution = 'c', three_d=False):
-        """Plots a map of the flight path
+    def plot_map(self, resolution='c', three_d=False):
+        """
+        Plots a map of the flight path
 
         Note
         ----
@@ -140,7 +143,7 @@ class TimeSeries(object):
         """
 
         data = self.data.copy()
-        data = data.loc[:,['Lon','Lat']]
+        data = data.loc[:, ['Lon', 'Lat']]
         data = data.dropna()
 
         lon_center = (data.Lon.values.max() + data.Lon.values.min()) / 2.
@@ -182,11 +185,11 @@ class TimeSeries(object):
 
         else:
             bmap = Basemap(projection='aeqd',
-                       lat_0=lat_center,
-                       lon_0=lon_center,
-                       width=width,
-                       height=height,
-                       resolution=resolution)
+                           lat_0=lat_center,
+                           lon_0=lon_center,
+                           width=width,
+                           height=height,
+                           resolution=resolution)
 
             fig = plt.figure()
             ax = Axes3D(fig)
@@ -200,8 +203,6 @@ class TimeSeries(object):
                 ax.plot(x[i:i + 2], y[i:i + 2], self.data.Altitude.values[i:i + 2],
                         color=color)
             return bmap, ax
-
-
 
     def zoom_time(self, start=None, end=None, copy=True):
         """ Selects a strech of time from a housekeeping instance.
@@ -249,7 +250,6 @@ class TimeSeries(object):
         else:
             return
 
-
     def plot_versus_pressure_sep_axes(self, what):
         what = self.data[what]
 
@@ -291,7 +291,8 @@ class TimeSeries(object):
         return ax, ax2
 
     def plot_versus_altitude(self, what, ax=False, figsize=None):
-        """ Plots selected columns versus altitude
+        """
+        Plots selected columns versus altitude
 
         Arguments
         ---------

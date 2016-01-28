@@ -52,7 +52,7 @@ def particle_reynolds_number(temperature,  # Kelvin
 def flow_reynolds_number(inlet_diameter, air_velocity_in_inlet, temperature, pressure, verbose=False):
     """definition!"""
     out = air_density(temperature, pressure, verbose=verbose) * inlet_diameter * air_velocity_in_inlet / air_viscosity(
-        temperature, verbose=verbose)
+            temperature, verbose=verbose)
     if verbose:
         print('flow reynolds number: %s' % out)
     return out

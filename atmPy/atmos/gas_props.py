@@ -1,5 +1,6 @@
 import abc
 
+
 class Gas(object):
     """
     Generic object defining different properties of gasses.

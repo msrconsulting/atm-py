@@ -13,7 +13,17 @@ from math import log
 from math import exp
 import abc
 
-class Esat:
+# Molecular weight of water in g/mol
+Mw = 18.01528
+
+# Molecular weight of air in g/mol
+Ma = 28.97
+
+# Ratio of molecular weight of water to air (~0.622)
+eps = Mw/Ma
+
+
+class Water:
     """
     This class uses a strategy pattern to determine how saturation vapor
     pressures will be calculated.
@@ -26,9 +36,9 @@ class Esat:
 
     Examples
     --------
-    >>>import atmosphere as atmos
+    >>>from atmPy.atmos import water
 
-    >>>eg = atmos.goff()
+    >>>eg = water.GoffGratch()
 
     >>>t = 20 # Set the temperature to 20 degrees Celsius
 
@@ -70,8 +80,25 @@ class Esat:
         """
         return 0
 
+    def dew_point(self, t, rh):
+        """
+        Parameters
+        ----------
+        t:  float
+            temperature in degrees Celsius
+        rh: float
+            relative humidity in %
 
-class GoffGratch(Esat):
+        Returns
+        -------
+        float
+        Dewpoint temperature in degrees Celsius
+        """
+
+        return 0
+
+
+class GoffGratch(Water):
     """
     Use Goff-Gratch equations to calculate vapor pressure over water or ice.
     """
@@ -93,7 +120,7 @@ class GoffGratch(Esat):
         return 10.0**a
 
 
-class Buck81(Esat):
+class Buck81(Water):
     """
     Calculate water vapor pressure as function of temperature according to Buck (1981).
     """
@@ -115,7 +142,7 @@ class Buck81(Esat):
         return a*exp((b - t/d)*t/(t + c))   # This is equation 4a
         
         
-class MurphyKoop(Esat):
+class MurphyKoop(Water):
     
     def ew(self, t):
         t += 273.15
@@ -128,3 +155,22 @@ class MurphyKoop(Esat):
     def ei(self, t):
         t += 273.15
         return exp(9.550426 - 5723.265/t + 3.53068*log(t) - 0.00728332*t)/100
+
+
+def wv_mixing_ratio(e, p):
+    """
+    Retrieve the water vapor mixing ratio.
+
+    Parameters
+    ----------
+    e:  float
+        water vapor pressure in mb
+    p:  float
+        atmospheric pressure in mb
+
+    Returns
+    --------
+    float
+    Water vapor mixing ratio
+    """
+    return e*eps/(p-e)
