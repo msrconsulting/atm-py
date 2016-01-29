@@ -20,7 +20,8 @@ before_install:
   - sudo rm -rf /dev/shm
   - sudo ln -s /run/shm /dev/shm
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy matplotlib dateutil pandas statsmodels
+  #$TRAVIS_PYTHON_VERSION
+  - conda install --yes python=3.5 atlas numpy scipy matplotlib dateutil pandas statsmodels
   # Coverage packages are on my binstar channel
   # - conda install --yes -c dan_blanchard python-coveralls nose-cov
   - python setup.py install
