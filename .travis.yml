@@ -4,7 +4,7 @@ python:
   - "3.3"
   - "3.4"
   - "3.5"
-  - "3.5-dev" # 3.5 development branch
+  #- "3.5-dev" # 3.5 development branch
   - "nightly" # currently points to 3.6-dev
 notifications:
   email: false
@@ -27,4 +27,4 @@ install:
   - python setup.py install
 # command to run tests
 script: #nosetests
-  - coverage run --source=lib -m nose2.__main__ -v
+  - nose2
