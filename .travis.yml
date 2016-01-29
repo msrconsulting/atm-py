@@ -1,11 +1,12 @@
 language: python
 python:
-  - "3.2.5"
+  # Can't get this to work with miniconda and travis
+  #- "3.2.5"
   - "3.3"
   - "3.4"
   - "3.5"
   #- "3.5-dev" # 3.5 development branch
-  - "3.6" # currently points to 3.6-dev
+  # - "3.6" # currently points to 3.6-dev
 notifications:
   email: false
   
