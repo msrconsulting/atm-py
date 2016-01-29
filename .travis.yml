@@ -24,7 +24,7 @@ install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy matplotlib pandas statsmodels nose
   # Coverage packages are on my binstar channel
   # - conda install --yes -c dan_blanchard python-coveralls nose-cov
-  - conda install --yes pep8 python-coveralls
+  - pip install pep8 python-coveralls
   - python setup.py install
 # command to run tests
 script: #nosetests
