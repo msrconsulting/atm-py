@@ -23,10 +23,8 @@ install:
   #$TRAVIS_PYTHON_VERSION
   - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy matplotlib pandas statsmodels nose
   # Coverage packages are on my binstar channel
-  # - conda install --yes -c dan_blanchard python-coveralls nose-cov
-  - pip install pep8 python-coveralls
   - python setup.py install
 # command to run tests
 script: #nosetests
   #- nosetests
-  - THEANO_FLAGS=floatX=float32 nosetests --with-coverage --cover-package=theanets --logging-level=INFO
+  - nosetests
