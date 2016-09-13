@@ -45,9 +45,9 @@ class Air(gp.Gas):
 
         # Make sure that the temperature is a float
         t = self.t + 273.15
-        c = 120.0  # Sutherland's constant
-        mu0 = 18.27e-6  # Reference viscocity
-        t0 = 291.15  # Reference temperature
+        c = 110.4 # 120.0  # Sutherland's constant
+        mu0 = 1.716e-5# 18.27e-6  # Reference viscocity
+        t0 = 273.15 # 291.15  # Reference temperature
 
         return (c + t0) / (c + t) * (t / t0) ** 1.5 * mu0
 
@@ -66,8 +66,10 @@ class Air(gp.Gas):
         # l0 = 0.066  # Reference mean free path at 1 atm
 
         tk = self.t + 273.15
-        return (R * tk) / (sqrt(2) * pi * self._dc ** 2 * Na * self.p * 100)
+        # return (R * tk) / (sqrt(2) * pi * self._dc ** 2 * Na * self.p * 100)
 
+        mfp = 6.73e-8*(tk/296.15*1013.25/self.p)*((110.4/296.15+1)/(110.4/tk+1))
+        return mfp
         # return l0 / patm
 
     def rho(self):

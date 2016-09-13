@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from math import pi,exp,log10,sqrt,log
-
 from scipy.optimize import fsolve
-
 from atmPy.atmos import constants
 
 
@@ -57,6 +55,29 @@ def z2d(zin, gas, n=1):
     return fsolve(f, d0)[0]
 
 
+def kn(dp, gas):
+    """
+    Calculate the Knudsen number of a particle.
+
+    The Knudsen number determines the appropriateness of the continuum assumption.  If Kn >~1, then the continuum
+    assumption is not appropriate for the problem solution.
+
+    Parameters
+    ----------
+    dp:     float
+            particle diameter in nm
+    gas:    gas object
+            Gas object used to determine the mean free path of the gas.
+
+    Returns
+    -------
+    float
+        Knudsen number
+
+    """
+    return 2*gas.l()/dp
+
+
 def cc(d, gas):
     """
     Calculate Cunningham correction factor.
@@ -78,39 +99,22 @@ def cc(d, gas):
     """
     
     # Convert diameter to microns.
-    d = float(d)*1e-3
+    d = float(d)*1e-9
     # Get the mean free path
     try:
 
-        mfp = gas.l()
-        return (1.05*exp(-0.39*d/mfp)+2.34)*mfp/d+1
+        # mfp = gas.l()
+        # Expect the units to be consistent
+        kn_ = kn(d, gas)
+        # This is Christina's calculation and is now used in the DAQ sw
+        return kn_ * (1.155 + 0.471 * exp(-0.596 / kn_)) + 1
+        # Old equation taken from Hinds...
+        #return (1.05*exp(-0.39*d/mfp)+2.34)*mfp/d+1
         
     except AttributeError:
         print('Invalid type entered for "gas".  Should be of type atmosphere.gas".')
         return 0
 
-
-def kn(dp, gas):
-    """
-    Calculate the Knudsen number of a particle.
-
-    The Knudsen number determines the appropriateness of the continuum assumption.  If Kn >~1, then the continuum
-    assumption is not appropriate for the problem solution.
-
-    Parameters
-    ----------
-    dp:     float
-            particle diameter in nm
-    gas:    gas object
-            Gas object used to determine the mean free path of the gas.
-
-    Returns
-    -------
-    float
-        Knudsen number
-
-    """
-    return 2*gas.l/dp
 
 
 def ndistr(dp, n=-1, t=20):
